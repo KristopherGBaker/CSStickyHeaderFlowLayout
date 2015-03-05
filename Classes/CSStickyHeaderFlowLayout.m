@@ -64,6 +64,7 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
             // Not implemeneted
         } else {
             NSIndexPath *indexPath = [(UICollectionViewLayoutAttributes *)obj indexPath];
+            attributes.frame = [self layoutAttributesForItemAtIndexPath:indexPath].frame;
 
             UICollectionViewLayoutAttributes *currentAttribute = [lastCells objectForKey:@(indexPath.section)];
 
@@ -164,11 +165,50 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [super layoutAttributesForItemAtIndexPath:indexPath];
-    CGRect frame = attributes.frame;
-    frame.origin.y += self.parallaxHeaderReferenceSize.height;
-    attributes.frame = frame;
-    return attributes;
+    UICollectionViewLayoutAttributes *currentItemAttributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect currentFrame = currentItemAttributes.frame;
+    currentFrame.origin.y += self.parallaxHeaderReferenceSize.height;
+    currentItemAttributes.frame = currentFrame;
+    
+    NSInteger items = [self.collectionView numberOfItemsInSection:indexPath.section];
+    NSInteger nextItem = indexPath.item + 1;
+    
+    if (indexPath.item > 0) {
+        NSInteger previousItem = indexPath.item - 1;
+        NSIndexPath *previousIndexPath = [NSIndexPath indexPathForItem:previousItem inSection:indexPath.section];
+        CGRect previousFrame = [super layoutAttributesForItemAtIndexPath:previousIndexPath].frame;
+        previousFrame.origin.y += self.parallaxHeaderReferenceSize.height;
+        
+        CGRect shiftedFrame = CGRectMake(CGRectGetMinX(currentFrame),
+                                         CGRectGetMinY(previousFrame),
+                                         CGRectGetWidth(previousFrame),
+                                         CGRectGetHeight(previousFrame));
+        if (CGRectIntersectsRect(currentFrame, shiftedFrame)) {
+            if (CGRectGetMinY(previousFrame) < CGRectGetMinY(currentFrame)) {
+                currentFrame.origin.y = CGRectGetMinY(previousFrame);
+                currentItemAttributes.frame = currentFrame;
+            }
+        }
+    }
+    
+    if (nextItem < items) {
+        NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:nextItem inSection:indexPath.section];
+        CGRect nextFrame = [super layoutAttributesForItemAtIndexPath:nextIndexPath].frame;
+        nextFrame.origin.y += self.parallaxHeaderReferenceSize.height;
+        
+        CGRect shiftedNextFrame = CGRectMake(CGRectGetMinX(currentFrame),
+                                             CGRectGetMinY(nextFrame),
+                                             CGRectGetWidth(nextFrame),
+                                             CGRectGetHeight(nextFrame));
+        if (CGRectIntersectsRect(currentFrame, shiftedNextFrame)) {
+            if (CGRectGetMinY(nextFrame) < CGRectGetMinY(currentFrame)) {
+                currentFrame.origin.y = CGRectGetMinY(nextFrame);
+                currentItemAttributes.frame = currentFrame;
+            }
+        }
+    }
+    
+    return currentItemAttributes;
 }
 
 - (CGSize)collectionViewContentSize {
