@@ -186,6 +186,11 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
         if (CGRectIntersectsRect(currentFrame, shiftedFrame)) {
             if (CGRectGetMinY(previousFrame) < CGRectGetMinY(currentFrame)) {
                 currentFrame.origin.y = CGRectGetMinY(previousFrame);
+                
+                if (CGRectGetHeight(previousFrame) > CGRectGetHeight(currentFrame)) {
+                    currentFrame.size.height = CGRectGetHeight(previousFrame);
+                }
+                
                 currentItemAttributes.frame = currentFrame;
             }
         }
@@ -203,6 +208,11 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
         if (CGRectIntersectsRect(currentFrame, shiftedNextFrame)) {
             if (CGRectGetMinY(nextFrame) < CGRectGetMinY(currentFrame)) {
                 currentFrame.origin.y = CGRectGetMinY(nextFrame);
+                
+                if (CGRectGetHeight(nextFrame) > CGRectGetHeight(currentFrame)) {
+                    currentFrame.size.height = CGRectGetHeight(nextFrame);
+                }
+                
                 currentItemAttributes.frame = currentFrame;
             }
         }
