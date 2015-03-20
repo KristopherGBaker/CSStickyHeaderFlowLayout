@@ -179,10 +179,10 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
         CGRect previousFrame = [super layoutAttributesForItemAtIndexPath:previousIndexPath].frame;
         previousFrame.origin.y += self.parallaxHeaderReferenceSize.height;
         
-        CGRect shiftedFrame = CGRectMake(CGRectGetMinX(currentFrame),
-                                         CGRectGetMinY(previousFrame),
-                                         CGRectGetWidth(previousFrame),
-                                         CGRectGetHeight(previousFrame));
+        CGRect shiftedFrame = CGRectMake(floorf(CGRectGetMinX(currentFrame)),
+                                         floorf(CGRectGetMinY(previousFrame)),
+                                         floorf(CGRectGetWidth(previousFrame)),
+                                         floorf(CGRectGetHeight(previousFrame)));
         if (CGRectIntersectsRect(currentFrame, shiftedFrame)) {
             if (CGRectGetMinY(previousFrame) < CGRectGetMinY(currentFrame)) {
                 currentFrame.origin.y = CGRectGetMinY(previousFrame);
@@ -201,10 +201,10 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
         CGRect nextFrame = [super layoutAttributesForItemAtIndexPath:nextIndexPath].frame;
         nextFrame.origin.y += self.parallaxHeaderReferenceSize.height;
         
-        CGRect shiftedNextFrame = CGRectMake(CGRectGetMinX(currentFrame),
-                                             CGRectGetMinY(nextFrame),
-                                             CGRectGetWidth(nextFrame),
-                                             CGRectGetHeight(nextFrame));
+        CGRect shiftedNextFrame = CGRectMake(floorf(CGRectGetMinX(currentFrame)),
+                                             floorf(CGRectGetMinY(nextFrame)),
+                                             floorf(CGRectGetWidth(nextFrame)),
+                                             floorf(CGRectGetHeight(nextFrame)));
         if (CGRectIntersectsRect(currentFrame, shiftedNextFrame)) {
             if (CGRectGetMinY(nextFrame) < CGRectGetMinY(currentFrame)) {
                 currentFrame.origin.y = CGRectGetMinY(nextFrame);
