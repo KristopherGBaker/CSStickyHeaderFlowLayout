@@ -198,7 +198,13 @@ NSString *const CSStickyHeaderParallaxHeader = @"CSStickyHeaderParallexHeader";
     
     if (nextItem < items) {
         NSIndexPath *nextIndexPath = [NSIndexPath indexPathForItem:nextItem inSection:indexPath.section];
-        CGRect nextFrame = [super layoutAttributesForItemAtIndexPath:nextIndexPath].frame;
+        CGRect nextFrame = currentFrame;
+        @try {
+            nextFrame = [super layoutAttributesForItemAtIndexPath:nextIndexPath].frame;
+        }
+        @catch (NSException *ex) {
+            nextFrame = currentFrame;
+        }
         nextFrame.origin.y += self.parallaxHeaderReferenceSize.height;
         
         CGRect shiftedNextFrame = CGRectMake(floorf(CGRectGetMinX(currentFrame)),
